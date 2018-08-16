@@ -5,3 +5,5 @@ Amanda changed line 4.
 This is a test repository for the training.
 
 And it has lots of **good** information.
+
+This Change was Tate's Reaaly Really Really Smart Idea. He would be quite upset if you revised his changes.
