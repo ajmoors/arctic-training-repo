@@ -70,4 +70,71 @@ catch_df <- catch_df %>%
 tail(catch_df)
 ```
 
+# Split-Apply-Combine
+
+```{r}
+catch_summarized <- catch_df %>% 
+  group_by(Region) %>% 
+  summarise(mean_catch = mean(catch))
+
+head(catch_summarized)
+```
+
+```{r}
+catch_range <- catch_df %>% 
+  group_by(Region) %>% 
+  summarise(catch_low = range(catch)[1],
+            catch_high = range(catch)[2])
+
+print(catch_range)
+```
+
+```{r}
+catch_mean <- catch_df %>% 
+  group_by(Region, species) %>% 
+  # calculate, mean, sd, n
+  summarise(catch_mean = mean(catch, na.rm = T),
+            catch_stdev = sd(catch, na.rm =T),
+            num_obs = n()) %>% 
+  # filter for Chinook
+  filter(species == "Chinook")
+
+print(catch_mean)
+            
+```
+
+```{r}
+catch_year <- catch_df %>% 
+  filter(Year > 1990 | Year < 1900) %>% 
+  group_by(Year, species) %>% 
+  summarise(catch_sum = sum(catch))
+  
+  
+print(catch_year)
+```
+
+# Joins
+
+Read in regions in definition file
+
+```{r}
+region_defs <- read.csv(url("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/df35b.303.1", method = "libcurl"),
+                        stringsAsFactors = FALSE)
+
+head(region_defs)
+
+```
+
+```{r}
+region_defs <- region_defs %>% 
+  select(code,mgmtArea)
+
+head(region_defs)
+```
+
+```{r}
+catch_joined <- left_join(catch_df, region_defs, by = c("Region" = "code"))
+
+head(catch_joined)
+```
 
